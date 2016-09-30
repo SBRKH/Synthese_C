@@ -1,0 +1,79 @@
+/*
+** parse.c for parse in /home/khoual_s/rendu/Synthese/calendar/srcs
+** 
+** Made by Khoualdia Sabri
+** Login   <khoual_s@epitech.net>
+** 
+** Started on  Fri Jul  1 10:37:41 2016 Khoualdia Sabri
+** Last update Fri Jul  1 14:08:08 2016 Khoualdia Sabri
+*/
+
+#include <stdlib.h>
+#include <stdio.h>
+#include "calendar.h"
+
+void             print_list(t_employee *first)
+{
+  t_employee                *current = first;
+
+  while (current)
+    {
+      printf("%s\n", (char *)current->id);
+      printf("%s\n", (char *)current->last_name);
+      printf("%s\n", (char *)current->first_name);
+      printf("%s\n", (char *)current->position);
+      printf("%s\n", (char *)current->zipcode);
+      printf("%s\n", "*******************************");
+      current = current->next;
+    }
+}
+
+void             free_list(t_employee *first)
+{
+  t_employee	            *backup;
+
+  while (first)
+    {
+      backup = first->next;
+      free(first);
+      first = backup;
+    }
+}
+
+t_employee	*fill_employee(char **tab)
+{
+  t_employee	*start;
+  t_employee	*work;
+  char		**cut;
+  int		i;
+
+  i = 0;
+  if ((start = malloc(sizeof(t_employee *) * 10)) == NULL)
+    exit (84);
+  if ((work = malloc(sizeof(t_employee *) * 10)) == NULL)
+    exit (84);
+  start->next = NULL;
+  printf("%s\n", "ca va rentrer");
+  /* while (my_strncmp(tab[i], "new_employee", my_strlen("new_employee") == 0)) */
+  while (tab[i])
+    {
+      printf("%s\n", "ca rentre pas");
+      if (my_strcmp(tab[i], "new_employee") > 0)
+	{
+	  cut = my_strtowordtab(tab[i], ' ');
+	  work->last_name = my_strdup(cut[1]);
+	  work->first_name = my_strdup(cut[2]);
+	  work->position = my_strdup(cut[3]);
+	  work->zipcode = my_strdup(cut[4]);
+	  work->id = my_strdup(cut[5]);
+	  printf("%s\n", "end");
+	  start = work->next;
+	  printf("%s\n", "plus un");
+	}
+      i++;
+    }
+  printf("%s\n", "ca resort");
+  free_list(work);
+  printf("%s\n", "ca free");
+  return (start);
+}
