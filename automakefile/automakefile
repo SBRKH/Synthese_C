@@ -1,0 +1,185 @@
+#!/bin/sh
+## automakefile.sh for automakefile in /home/khoual_s/rendu/Synthese/automakefile
+## 
+## Made by Khoualdia Sabri
+## Login   <khoual_s@epitech.net>
+## 
+## Started on  Mon Jun 27 15:24:53 2016 Khoualdia Sabri
+## Last update Wed Jun 29 15:03:19 2016 Khoualdia Sabri
+##
+
+if [[ -z "$1" ]]
+then    
+    printf "not enought argument\n"
+    exit 84
+fi
+if [[ ! -e "$1" ]]
+then
+    printf "error file\n"
+    exit 84
+fi
+if [[ $# -ge 2 ]]
+then
+    printf "too many argument\n"
+    exit 84
+fi
+if [[ ! -s "$1" ]]
+then
+    printf "empty file\n"
+    exit 84
+fi
+if [[ ! -s "$1" ]]
+then
+    printf "file not found\n"
+    exit 84
+fi
+dir=`echo $1 | cut -d "/" -f1`
+printf "##\n" > $dir/Makefile
+printf "## Makefile for Makefile in $PWD/$dir\n" >> $dir/Makefile
+printf "##\n" >> $dir/Makefile
+printf "## Made by $USER\n" >> $dir/Makefile
+printf "## Login   <$USER@epitech.eu>\n" >> $dir/Makefile
+printf "##\n" >> $dir/Makefile
+printf "## Started on $(date +%c) $USER\n" >> $dir/Makefile
+printf "## Last update $(date +%c) $USER\n" >> $dir/Makefile
+printf "##\n\n" >> $dir/Makefile
+while read line
+do
+    var=`echo $line | cut -d ';' -f1`
+    use=`echo $line | cut -d ';' -f2`
+    if [[ $var = "EXEC" ]] && [[ ! -z $use ]]
+    then
+	printf "EXEC\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "PROJECT_DIR" ]] && [[ ! -z $use ]]
+    then
+	printf "PROJECT_DIR\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "SOURCES_DIR" ]] && [[ ! -z $use ]]
+    then
+	printf "SOURCES_DIR\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "HEADERS_DIR" ]] && [[ ! -z $use ]]
+    then
+	printf "HEADERS_DIR\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "LIBS_DIR" ]] && [[ ! -z $use ]]
+    then
+	printf "LIBS_DIR\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "CC" ]] && [[ ! -z $use ]]
+    then
+	printf "CC\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "CFLAGS" ]] && [[ ! -z $use ]]
+    then
+	printf "CFLAGS\t\t+=\t-I./\$(HEADERS_DIR) "
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "LDFLAGS" ]] && [[ ! -z $use ]]
+    then
+	printf "LDFLAGS\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "BCK_DIR" ]] && [[ ! -z $use ]]
+    then
+	printf "BCK_DIR\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "ZIP" ]] && [[ ! -z $use ]]
+    then
+	printf "ZIP\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "ZIPFLAGS" ]] && [[ ! -z $use ]]
+    then
+	printf "ZIPFLAGS\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "UNZIP" ]] && [[ ! -z $use ]]
+    then
+	printf "UNZIP\t\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $var = "UNZIPFLAGS" ]] && [[ ! -z $use ]]
+    then
+	printf "UNZIPFLAGS\t=\t"
+	echo "$use"
+	printf "\n"
+    fi
+    if [[ $line =~ ".c" ]]
+    then
+	if [[ $var =~ ".c" ]]
+	then
+	    srcs[i]=`echo $var | cut -d " " -f1`
+	    let i++
+	fi
+	if [[ $use =~ ".c" ]]
+	then
+	    srcs[i]=`echo $use | cut -d " " -f2`
+	    let i++
+	fi
+    fi
+    if [[ $line =~ ".h" ]]
+    then
+	if [[ $var =~ ".h" ]]
+	then
+	    inc[j]=`echo $var | cut -d " " -f1`
+	    let j++
+	fi
+	if [[ $use =~ ".h" ]]
+	then
+	    inc[j]=`echo $use | cut -d " " -f1`
+	    let j++
+	fi
+    fi
+done < $1 >> $dir/Makefile
+i=0
+printf "SRCS\t\t=" >> $dir/Makefile
+for i in "${srcs[@]}"
+do
+    printf "\t\$(SOURCES_DIR)/$i"
+    printf " \\"
+    printf "\n\t\t"
+done >> $dir/Makefile
+j=0
+printf "\nINCLUDE\t\t=" >> $dir/Makefile
+for j in "${inc[@]}"
+do
+    printf "\t\$(HEADERS_DIR)/$j"
+    printf " \\"
+    printf "\n\t\t"
+done >> $dir/Makefile
+printf "\nRM\t\t=\trm -f\n" >> $dir/Makefile
+printf "\nOBJS\t\t=\t\$(SRCS:.c=.o)\n" >> $dir/Makefile
+printf "\nall\t:\t\$(EXEC)\n\n" >> $dir/Makefile
+printf "\$(EXEC)\t:\t\$(OBJS)\n" >> $dir/Makefile
+printf "\t\t\$(CC) \$(CFLAGS) \$(LDFLAGS) \$(OBJS) -o \$(EXEC) -L \$(LIBS_DIR)\n" >> $dir/Makefile
+printf "clean\t:\n\t\t\$(RM) \$(EXEC)\n\n" >> $dir/Makefile
+printf "fclean\t:\tclean\n\t\t\$(RM) \$(OBJS)\n\n" >> $dir/Makefile
+printf "re\t:\tfclean all\n\n" >> $dir/Makefile
+printf "archive\t:\n\t\t\$(ZIP) \$(ZIPFLAGS) \$(BCK_DIR)/backup.\$(ZIP) \$(SRCS)\n" >> $dir/Makefile
+printf "\t\t""@echo \$(EXEC).\$(ZIP) file generated.\n\n" >> $dir/Makefile
+printf "revert\t:\n\t\t\$(UNZIP) \$(UNZIPFLAGS) \$(BCK_DIR)/backup.\$(ZIP)\n\n" >> $dir/Makefile
+printf "num\t:\n\t\t""@echo version 1.0\n\n" >> $dir/Makefile
+printf "delete\t:\n\t\trm -rf \$(BCK_DIR)/backup.\$(ZIP)\n\n" >> $dir/Makefile
+printf ".PHONY\t:\tfclean clean all re\n" >> $dir/Makefile
+exit 0
